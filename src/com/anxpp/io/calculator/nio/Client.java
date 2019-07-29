@@ -4,6 +4,7 @@ public class Client {
 	private static int DEFAULT_PORT = 12345;
 	private static ClientHandle clientHandle;
 	public static void start(){
+		System.out.println("å®¢æˆ·ç«¯å¯åŠ¨");
 		start(DEFAULT_HOST,DEFAULT_PORT);
 	}
 	public static synchronized void start(String ip,int port){
@@ -12,7 +13,7 @@ public class Client {
 		clientHandle = new ClientHandle(ip,port);
 		new Thread(clientHandle,"Server").start();
 	}
-	//Ïò·şÎñÆ÷·¢ËÍÏûÏ¢
+	//å‘æœåŠ¡å™¨å‘é€æ¶ˆæ¯
 	public static boolean sendMsg(String msg) throws Exception{
 		if(msg.equals("q")) return false;
 		clientHandle.sendMsg(msg);

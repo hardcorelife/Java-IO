@@ -7,42 +7,44 @@ import java.net.Socket;
 
 import com.anxpp.io.utils.Calculator;
 /**
- * �ͻ����߳�
+ * 客户端线程
  * @author yangtao__anxpp.com
- * ���ڴ���һ���ͻ��˵�Socket��·
+ * 用于处理一个客户端的Socket链路
  */
-public class ServerHandler implements Runnable{
+public class ServerHandler implements Runnable {
 	private Socket socket;
+
 	public ServerHandler(Socket socket) {
 		this.socket = socket;
 	}
+
 	@Override
 	public void run() {
 		BufferedReader in = null;
 		PrintWriter out = null;
-		try{
+		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(socket.getOutputStream(),true);
+			out = new PrintWriter(socket.getOutputStream(), true);
 			String expression;
 			String result;
-			while(true){
-				//ͨ��BufferedReader��ȡһ��
-				//����Ѿ�����������β��������null,�˳�ѭ��
-				//����õ��ǿ�ֵ���ͳ��Լ�����������
-				if((expression = in.readLine())==null) break;
-				System.out.println("�������յ���Ϣ��" + expression);
-				try{
+			while (true) {
+				//通过BufferedReader读取一行
+				//如果已经读到输入流尾部，返回null,退出循环
+				//如果得到非空值，就尝试计算结果并返回
+				if ((expression = in.readLine()) == null) break;
+				System.out.println("服务器收到消息：" + expression);
+				try {
 					result = Calculator.Instance.cal(expression).toString();
-				}catch(Exception e){
-					result = "�������" + e.getMessage();
+				} catch (Exception e) {
+					result = "计算错误：" + e.getMessage();
 				}
 				out.println(result);
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			//һЩ��Ҫ��������
-			if(in != null){
+		} finally {
+			//一些必要的清理工作
+			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e) {
@@ -50,11 +52,11 @@ public class ServerHandler implements Runnable{
 				}
 				in = null;
 			}
-			if(out != null){
+			if (out != null) {
 				out.close();
 				out = null;
 			}
-			if(socket != null){
+			if (socket != null) {
 				try {
 					socket.close();
 				} catch (IOException e) {
@@ -64,4 +66,5 @@ public class ServerHandler implements Runnable{
 			}
 		}
 	}
+
 }

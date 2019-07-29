@@ -14,7 +14,7 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
 		this.host = host;
 		this.port = port;
 		try {
-			//´´½¨Òì²½µÄ¿Í»§¶ËÍ¨µÀ
+			//åˆ›å»ºå¼‚æ­¥çš„å®¢æˆ·ç«¯é€šé“
 			clientChannel = AsynchronousSocketChannel.open();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -22,9 +22,9 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
 	}
 	@Override
 	public void run() {
-		//´´½¨CountDownLatchµÈ´ý
+		//åˆ›å»ºCountDownLatchç­‰å¾…
 		latch = new CountDownLatch(1);
-		//·¢ÆðÒì²½Á¬½Ó²Ù×÷£¬»Øµ÷²ÎÊý¾ÍÊÇÕâ¸öÀà±¾Éí£¬Èç¹ûÁ¬½Ó³É¹¦»á»Øµ÷completed·½·¨
+		//å‘èµ·å¼‚æ­¥è¿žæŽ¥æ“ä½œï¼Œå›žè°ƒå‚æ•°å°±æ˜¯è¿™ä¸ªç±»æœ¬èº«ï¼Œå¦‚æžœè¿žæŽ¥æˆåŠŸä¼šå›žè°ƒcompletedæ–¹æ³•
 		clientChannel.connect(new InetSocketAddress(host, port), this, this);
 		try {
 			latch.await();
@@ -37,16 +37,16 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
 			e.printStackTrace();
 		}
 	}
-	//Á¬½Ó·þÎñÆ÷³É¹¦
-	//ÒâÎ¶×ÅTCPÈý´ÎÎÕÊÖÍê³É
+	//è¿žæŽ¥æœåŠ¡å™¨æˆåŠŸ
+	//æ„å‘³ç€TCPä¸‰æ¬¡æ¡æ‰‹å®Œæˆ
 	@Override
 	public void completed(Void result, AsyncClientHandler attachment) {
-		System.out.println("¿Í»§¶Ë³É¹¦Á¬½Óµ½·þÎñÆ÷...");
+		System.out.println("å®¢æˆ·ç«¯æˆåŠŸè¿žæŽ¥åˆ°æœåŠ¡å™¨...");
 	}
-	//Á¬½Ó·þÎñÆ÷Ê§°Ü
+	//è¿žæŽ¥æœåŠ¡å™¨å¤±è´¥
 	@Override
 	public void failed(Throwable exc, AsyncClientHandler attachment) {
-		System.err.println("Á¬½Ó·þÎñÆ÷Ê§°Ü...");
+		System.err.println("è¿žæŽ¥æœåŠ¡å™¨å¤±è´¥...");
 		exc.printStackTrace();
 		try {
 			clientChannel.close();
@@ -55,13 +55,13 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
 			e.printStackTrace();
 		}
 	}
-	//Ïò·þÎñÆ÷·¢ËÍÏûÏ¢
+	//å‘æœåŠ¡å™¨å‘é€æ¶ˆæ¯
 	public void sendMsg(String msg){
 		byte[] req = msg.getBytes();
 		ByteBuffer writeBuffer = ByteBuffer.allocate(req.length);
 		writeBuffer.put(req);
 		writeBuffer.flip();
-		//Òì²½Ð´
+		//å¼‚æ­¥å†™
 		clientChannel.write(writeBuffer, writeBuffer,new WriteHandler(clientChannel, latch));
 	}
 }
